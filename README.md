@@ -327,8 +327,6 @@ sudo reboot now -f
 	# it seems either the method I've outlined which automatically unlocks /boot at startup does not work, or it was an issue until I tried it with gnome.. If this is the case just boot in and use the 'disks' gui to alter it's settings there; deactivate and then reactivate password protection then deactivate and reactivate user settings from the menu to the crypttab settings via the same gui it should update initramfs and related files from there then update inittramfss and grub, reboot after this change and it should work fine with the keys saved in it's own directory. I do have an outline mapped reverse engineer this because it seems to differ from pure debian, however life has begun to pile up so I hope that maybe the community can continue with any work that may need to be done by the point I've posted the video.
 	# One such issue is the outdated usage of grub2 where I believe it now unlocks luks2 and may contain an internal password management function making luks1 obsolete, especially when manjaro and several other flavors of linux offer this option in their installer.
 
-
-
 By the way:
  
 Thank you for taking the time to complete this guide; it means the world to me. I've faced numerous obstacles, both directly and indirectly from those closest to me. It's surprising to see what ego, shame, and greed can make people do, even to those they claim to love.
