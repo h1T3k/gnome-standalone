@@ -251,22 +251,25 @@ Generate the shared secret (here with 512 bits of entropy as it’s also the siz
 	sudo chmod u=r,go-rwx /etc/keys/root.key
  
 Create a new key slot with that key file.
+
 	sudo cryptsetup luksAddKey /dev/nvme0n1p3 /etc/keys/boot.key
 and add in the other voleumes too.
+
 	sudo cryptsetup luksAddKey /dev/nvme0n1p4 /etc/keys/swap.key
 	sudo cryptsetup luksAddKey /dev/nvme0n1p5 /etc/keys/root.key
  
-add these entries into the ccrypttab.
+add these entries into the ccrypttab:
+
 	sudo sed -i "/^nvme0n1p3_crypt/c\nvme0n1p3_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p3) /etc/keys/boot.key luks,key-slot=1" /etc/crypttab
 	sudo sed -i "/^nvme0n1p4_crypt/c\nvme0n1p4_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p4) /etc/keys/swap.key luks,swap,discard,key-slot=1" /etc/crypttab
 	sudo sed -i "/^nvme0n1p5_crypt/c\nvme0n1p5_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p5) /etc/keys/root.key luks,discard,key-slot=1" /etc/crypttab
 
 make sure its all correct and comment out <#> the original entries with:
+
 	sudo nano /etc/crypttab - the mapper name for boot may change, so you may want to run lsblk to check it.
 	#
 	#
 	#
- 
 # Finishing up BTRFS
 Now we can add the final modifications to our /etc/fstab for our btrfs filesystem with:
 
