@@ -26,24 +26,18 @@ I compiled this from about four or so different guides and read through numerous
  
 Lastly, while I uncovered three ways to get this done I am going to assume that you are doing exactly as I did and so from here on out I will refer to our target drive as nvme0n1 and its partitions as nvme0n1p1, nvme0n1p2, nvme0n1p3/nvme0n1p3_crypt/luks-aaaa-aa-aa-aa-aaaaaa, nvme0n1p4_crypt and nvme0n1p5_crypt etc etc if I and when I do, so make sure to check your device ids etc before making any changes. Maybe copy ths file down and adjust it before you start.
  
-In Mac OS, obtain the installer and DD it to your external device.
-	sudo diskutil list
-
-identify the internal drive
-	sudo dd if=/path/to/kali.iso of=/dev/disk69 bs=1M conv=fsync status=progress
- 
-Once it's finished, power it down and carefully remove the internal drive. This will take care of /target/boot/efi being mounted to the wrong location.
+In Mac OS, power it down and carefully remove the internal drive. This will take care of /target/boot/efi being mounted to the wrong location.
  
 Replace the internal drive with the new SSD we are using as our /target. Plug back in the power cable, our Kali installer USB and reboot our computer from the image.
  
 Continue by selecting "Advanced Options" and then selecting "graphical expert installation guide.."
  
 Select:
-	advanced options
 
+	advanced options
 and then:
+
 	graphical expert install
- 
 and wait for the installer to load a list options.
  
 Begin selection of default install options and settings according to language, keyboard preferences etc.
@@ -66,15 +60,14 @@ Ignore warnings when setting up the network if you are using an unsupported driv
 	user name & passwords
 	Install base
 	Configure package manager
- 
 And select:
+
 	cryptdisks
 	fdiskudeb
 	partedudeb
 	low-mem
 	mbrudeb
 	rescuemode
- 
 Select:
 detect disks, then partition:
  
