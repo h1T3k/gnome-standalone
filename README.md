@@ -151,6 +151,8 @@ Add the following (substitute the <UUID> with yours)
 	UUID=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=9655aa34-2b43-40cd-947c-94d0b6193458 /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
+
+ Save, exit, and reload.
  
 	sudo systemctl daemon-reload
 	sudo reboot
