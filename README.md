@@ -111,6 +111,10 @@ Finish with defaults.
 Finish installing, remove the installation media and reboot into newly installed drive, continuing with the instructions below:
  
 # Setting up BTRFS filesystems.
+
+	sudo apt dist-upgrade
+	sudo apt auto-remove -y
+	sudo apt clean
 necessary:
 
 	sudo passwd	
@@ -121,7 +125,6 @@ Create the snapper configuration for the root filesystem "/"
 
 	sudo cp /usr/share/snapper/config-templates/default /etc/snapper/configs/root
 	sudo sed -i 's/^SNAPPER_CONFIGS=\"\"/SNAPPER_CONFIGS=\"root\"/' /etc/default/snapper
- 
 Prevent "updatedb" from indexing the snapshots, which would slow down the system
 
 	sudo sed -i '/# PRUNENAMES=/ a PRUNENAMES = ".snapshots"' /etc/updatedb.conf
@@ -132,11 +135,9 @@ Prevent "updatedb" from indexing the snapshots, which would slow down the system
  
 	sudo find /var/lib/gdm3/ -mindepth 1 -exec mv -t /mnt/@var@lib@gdm3/ {} +
 	sudo find /var/lib/AccountsService/ -mindepth 1 -exec mv -t /mnt/@var@lib@gAccountsService/ {} +
- 
 you can check with:
  
 	ls -la /mnt/@var@lib@gdm3
- 
 and:
  
 	ls -la /mnt/@var@lib@AccountsService
@@ -144,23 +145,16 @@ and:
 	sudo blkid /dev/mapper/nvme0n1p5_crypt
 	#	: UUID="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 	sudo nano /etc/fstab
- 
 Add the following (substitute the <UUID> with yours)
  
 	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=9655aa34-2b43-40cd-947c-94d0b6193458 /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
-
  Save, exit, and reload.
  
 	sudo systemctl daemon-reload
 	sudo reboot
- 
-	sudo apt dist-upgrade
-	sudo apt auto-remove -y
-	sudo apt clean
-	sudo reboot now
 Archive the directory elsewhere (on another device), and unmount it afterwards.
  
 	sudo mount -oremount,ro /boot
@@ -210,7 +204,6 @@ Create a file system on the mapped device. Assuming source device for /boot is s
  
 	sudo tar -C /boot --acls --xattrs -xf /tmp/boot.tar
 	sudo mount -v /boot/efi
- 
 # Enabling cryptomount in GRUB2 + REMOVABLE MODE, KEYSLOT SETUP & AUTO-UNLOCK
 Enable the feature, update the GRUB image and reinstall in removable mode:
  
@@ -229,14 +222,11 @@ Enable the feature, update the GRUB image and reinstall in removable mode:
 	#	Enter new passphrase:
 	#	Verify passphrase:
 (You can reuse the existing passphrase in the above prompts.)
- 
-	Note: cryptomount lacks an option to specify the key slot index to open. All active key slots are tried sequentially until a match is found. Running the PBKDF algorithm is a slow operation, so to speed up things you’ll want the key slot to unlock at GRUB stage to be the first active one. Run the following command to discover its index.
- 
+
 	sudo cryptsetup luksOpen --test-passphrase --verbose /dev/nvme0n1p3
 	#	Enter passphrase for /dev/nvme0n1p3:
 	#	Key slot 1 unlocked.
 	#	Command successful.
- 
 # Avoiding the Extra Password Prompt
 Generate the shared secret (here with 512 bits of entropy as it’s also the size of the volume key) inside a new file.
 
@@ -249,7 +239,6 @@ Generate the shared secret (here with 512 bits of entropy as it’s also the siz
 	zsh
 	sudo chmod u=rx,go-rwx /etc/keys
 	sudo chmod u=r,go-rwx /etc/keys/root.key
- 
 Create a new key slot with that key file.
 
 	sudo cryptsetup luksAddKey /dev/nvme0n1p3 /etc/keys/boot.key
@@ -257,13 +246,11 @@ and add in the other voleumes too.
 
 	sudo cryptsetup luksAddKey /dev/nvme0n1p4 /etc/keys/swap.key
 	sudo cryptsetup luksAddKey /dev/nvme0n1p5 /etc/keys/root.key
- 
 add these entries into the ccrypttab:
 
 	sudo sed -i "/^nvme0n1p3_crypt/c\nvme0n1p3_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p3) /etc/keys/boot.key luks,key-slot=1" /etc/crypttab
 	sudo sed -i "/^nvme0n1p4_crypt/c\nvme0n1p4_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p4) /etc/keys/swap.key luks,swap,discard,key-slot=1" /etc/crypttab
 	sudo sed -i "/^nvme0n1p5_crypt/c\nvme0n1p5_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p5) /etc/keys/root.key luks,discard,key-slot=1" /etc/crypttab
-
 make sure its all correct and comment out <#> the original entries with:
 
 	sudo nano /etc/crypttab - the mapper name for boot may change, so you may want to run lsblk to check it.
@@ -293,7 +280,6 @@ like so:
 	UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/gdm3	btrfs	defaults,subvol=@var@lib@gdm3		0	0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/AccountsService	btrfs	defaults,subvol=@var@lib@AccountsService	0	0 
- 
 when done editing save your work, exit the editor then run:
 
 	sudo systemctl daemon-reload
@@ -312,7 +298,6 @@ update grub
 and reboot for the changes to take affect:
 
 	sudo reboot now -f
- 
 # We're in....
  
 At this point I would open snapper-gui, make a new pre-boot snapshot for root, set it for 3 with 'name' as NUMBER_LIMIT and count as 10.
@@ -339,12 +324,9 @@ If you found value in this guide and wish to support me, consider buying me a co
     For crypto donations:
         Bitcoin: 36aqR7oXP4tLxqe1oHckXtdVEizSNaWxJX
 	Message me for other addresses :)
- 
- 
-~h1-t3k-
 
 ```
-    .....:::..:::::-:.--::..=+*+=----------------::-::--:-=---=++*+-:::----=========++=++++++*******
+    ~h1-t3k-..:::::-:.--::..=+*+=----------------::-::--:-=---=++*+-:::----=========++=++++++*******
       ....::..:::::--::-:-=+=:...::::------------::-----------:::-=*+-:::::--=========+++++++*******
     .   ..::..::-::--::=**=-.:::: ::.:---::-------::---------:-:.::-=*+=-:::--========+++++++**++***
          .::..:::----+**+-:...:--:.:..:---:---:-------------:::-::::::=+++=::----======++++++*+++***
