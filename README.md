@@ -273,23 +273,23 @@ Now we can add the final modifications to our /etc/fstab for our btrfs filesyste
 	sudo nano /etc/fstab
 like so:
  
-/dev/mapper/nvme0n1p4_crypt	/		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@		0	0
-/dev/mapper/nvme0n1p4_crypt	/.snapshots     btrfs   defaults,noatime,ssd,compress=lzo,subvol=@.snapshots	0	4
-# /boot was on /dev/nvme0n1p3 during installation
-UUID=9a90bf5e-fb5b-4a00-beba-616bc0092abe	/boot	ext4	defaults,noatime				0	1
-# /boot/efi was on /dev/nvme0n1p1 during installation
-UUID=EB8C-72F1			/boot/efi	vfat	umask=0077						0	1
-/dev/mapper/nvme0n1p4_crypt	/home		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@home		0	2
-/dev/mapper/nvme0n1p4_crypt	/root		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@root		0	3
-/dev/mapper/nvme0n1p4_crypt	/srv		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@srv		0	0
-/dev/mapper/nvme0n1p4_crypt	/tmp		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@tmp		0	0
-/dev/mapper/nvme0n1p4_crypt	/usr/local	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@usr@local	0	0
-/dev/mapper/nvme0n1p4_crypt	/var/log	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@var@log	0	0
-/dev/mapper/nvme0n1p5_crypt	none		swap	sw							0	0
-# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
-UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/gdm3	btrfs	defaults,subvol=@var@lib@gdm3		0	0
-# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
-UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/AccountsService	btrfs	defaults,subvol=@var@lib@AccountsService	0	0 
+	/dev/mapper/nvme0n1p4_crypt	/		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@		0	0
+	/dev/mapper/nvme0n1p4_crypt	/.snapshots     btrfs   defaults,noatime,ssd,compress=lzo,subvol=@.snapshots	0	4
+	# /boot was on /dev/nvme0n1p3 during installation
+	UUID=9a90bf5e-fb5b-4a00-beba-616bc0092abe	/boot	ext4	defaults,noatime				0	1
+	# /boot/efi was on /dev/nvme0n1p1 during installation
+	UUID=EB8C-72F1			/boot/efi	vfat	umask=0077						0	1
+	/dev/mapper/nvme0n1p4_crypt	/home		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@home		0	2
+	/dev/mapper/nvme0n1p4_crypt	/root		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@root		0	3
+	/dev/mapper/nvme0n1p4_crypt	/srv		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@srv		0	0
+	/dev/mapper/nvme0n1p4_crypt	/tmp		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@tmp		0	0
+	/dev/mapper/nvme0n1p4_crypt	/usr/local	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@usr@local	0	0
+	/dev/mapper/nvme0n1p4_crypt	/var/log	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@var@log	0	0
+	/dev/mapper/nvme0n1p5_crypt	none		swap	sw							0	0
+	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/gdm3	btrfs	defaults,subvol=@var@lib@gdm3		0	0
+	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/AccountsService	btrfs	defaults,subvol=@var@lib@AccountsService	0	0 
  
 when done editing save your work, exit the editor then run:
 
