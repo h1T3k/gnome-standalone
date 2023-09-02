@@ -9,7 +9,7 @@ By doing so, one can completely bypass all of the issues and obstacles present s
 * the potential overwrite of important data, directories and partitions potentially leading to an irrecoverable loss.
 * the overwrite of our host machine's efi partition
 
-# When booting external media, it seems that the main volume's efi partition is called on by default. Sure we could start off on a legacy bootable machine, manually adjusting things as we go on beffore we even complete the installation, however we can get exacactly what we want with one machine, one extra ssd and a driver set.
+When booting external media, it seems that the main volume's efi partition is called on by default. Sure we could start off on a legacy bootable machine, manually adjusting things as we go on before we even complete the installation, however we can get exacactly what we want with one machine, one extra ssd and a driver set.
  
 I completed this on a MacBook Air (13-inch, Early 2015), so for the sake of this I will assume you have the same, although I believe this would work on any EFI bootable machine if the internal storage is first removed and than booted from a bare metal installer USB. In the case of my installation, I used a SSD 3.2 as the medium for the installer, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD. The ssd I selected is remarkably fast however very, very inexpensive. It definitely needs a heat sink yet I can't see it being a permanent solution anyways as I would rather upgrade to a 5.0.
  
