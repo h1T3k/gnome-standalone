@@ -11,69 +11,71 @@ By doing so, one can completely bypass all of the issues and obstacles present s
 
 # When booting external media, it seems that the main volume's efi partition is called on by default. Sure we could start off on a legacy bootable machine, manually adjusting things as we go on beffore we even complete the installation, however we can get exacactly what we want with one machine, one extra ssd and a driver set.
  
-	I completed this on a MacBook Air (13-inch, Early 2015), so for the sake of this I will assume you have the same, although I believe this would work on any EFI bootable machine if the internal storage is first removed and than booted from a bare metal installer USB. In the case of my installation, I used a SSD 3.2 as the medium for the installer, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD. The ssd I selected is remarkably fast however very, very inexpensive. It definitely needs a heat sink yet I can't see it being a permanent solution anyways as I would rather upgrade to a 5.0.
+I completed this on a MacBook Air (13-inch, Early 2015), so for the sake of this I will assume you have the same, although I believe this would work on any EFI bootable machine if the internal storage is first removed and than booted from a bare metal installer USB. In the case of my installation, I used a SSD 3.2 as the medium for the installer, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD. The ssd I selected is remarkably fast however very, very inexpensive. It definitely needs a heat sink yet I can't see it being a permanent solution anyways as I would rather upgrade to a 5.0.
  
-	you can do this via USB, however you still need to remove the internal drive.
+you can do this via USB, however you still need to remove the internal drive.
  
-	DDing the bare metal installer onto a usb in MacOS will produce a different efi partition scheme, even if both devices you are using are apple products, the operating system with which you write that disk in must be MacOS in order to properly boot off of the following apple device, and also Apple DiskUtility seems to do exactly what it needs to with little manual intervention so I would suggest using that if you need to do any major rewrites up into the partitioning phase in order to obtain an apfs efi bootable bare metal installer.
+DDing the bare metal installer onto a usb in MacOS will produce a different efi partition scheme, even if both devices you are using are apple products, the operating system with which you write that disk in must be MacOS in order to properly boot off of the following apple device, and also Apple DiskUtility seems to do exactly what it needs to with little manual intervention so I would suggest using that if you need to do any major rewrites up into the partitioning phase in order to obtain an apfs efi bootable bare metal installer.
  
-	you can have far more control over the partition structure by using gdisk beforehand, but it is not necessary.
+you can have far more control over the partition structure by using gdisk beforehand, but it is not necessary.
  
-	I compiled this from about four or so different guides and read through numerous blog and reddit posts before I found a way that worked which once replicated has only really seemed to work this way which is probably due either memory constraints and a data bottleneck if using old hardware. Believe me it gets much more fast when wou plug an ssd directly into the board and install off of a usb 3.2+. That is truly when the power of the Debian Installer is realized with Kali Linux.
+I compiled this from about four or so different guides and read through numerous blog and reddit posts before I found a way that worked which once replicated has only really seemed to work this way which is probably due either memory constraints and a data bottleneck if using old hardware. Believe me it gets much more fast when wou plug an ssd directly into the board and install off of a usb 3.2+. That is truly when the power of the Debian Installer is realized with Kali Linux.
  
 	https://www.kali.org/docs/installation/hard-disk-install/
 	https://www.kali.org/docs/installation/btrfs/
  
-			Lastly, while I uncovered three ways to get this done I am going to assume that you are doing exactly as I did and so from here on out I will refer to our target drive as nvme0n1 and its partitions as nvme0n1p1, nvme0n1p2, nvme0n1p3/nvme0n1p3_crypt/luks-aaaa-aa-aa-aa-aaaaaa, nvme0n1p4_crypt and nvme0n1p5_crypt etc etc if I and when I do, so make sure to check your device ids etc before making any changes. Maybe copy ths file down and adjust it before you start.
+Lastly, while I uncovered three ways to get this done I am going to assume that you are doing exactly as I did and so from here on out I will refer to our target drive as nvme0n1 and its partitions as nvme0n1p1, nvme0n1p2, nvme0n1p3/nvme0n1p3_crypt/luks-aaaa-aa-aa-aa-aaaaaa, nvme0n1p4_crypt and nvme0n1p5_crypt etc etc if I and when I do, so make sure to check your device ids etc before making any changes. Maybe copy ths file down and adjust it before you start.
  
-	In Mac OS, obtain the installer and DD it to your external device.
-sudo diskutil list
+In Mac OS, obtain the installer and DD it to your external device.
+	sudo diskutil list
 
-	identify the internal drive
-sudo dd if=/path/to/kali.iso of=/dev/disk69 bs=1M conv=fsync status=progress
+identify the internal drive
+	sudo dd if=/path/to/kali.iso of=/dev/disk69 bs=1M conv=fsync status=progress
  
-	Once it's finished, power it down and carefully remove the internal drive. This will take care of /target/boot/efi being mounted to the wrong location.
+Once it's finished, power it down and carefully remove the internal drive. This will take care of /target/boot/efi being mounted to the wrong location.
  
-	Replace the internal drive with the new SSD we are using as our /target. Plug back in the power cable, our Kali installer USB and reboot our computer from the image.
+Replace the internal drive with the new SSD we are using as our /target. Plug back in the power cable, our Kali installer USB and reboot our computer from the image.
  
-	Continue by selecting "Advanced Options" and then selecting "graphical expert installation guide.."
+Continue by selecting "Advanced Options" and then selecting "graphical expert installation guide.."
  
-	Select:
-advanced options
+Select:
+	advanced options
 
-	and then:
-graphical expert install
+and then:
+	graphical expert install
  
-	and wait for the installer to load a list options.
+and wait for the installer to load a list options.
  
-	Begin selection of default install options and settings according to language, keyboard preferences etc.
+Begin selection of default install options and settings according to language, keyboard preferences etc.
  
-	When selecting additional components choose:
+When selecting additional components choose:
  
-cryptodisks udeb
-parted udeb
-low-mem install
-mbr udeb
-fdisk udeb
-rescue mode
+	cryptodisks udeb
+	parted udeb
+	low-mem install
+	mbr udeb
+	fdisk udeb
+	rescue mode
  
-	And continue.
+And continue.
+
+Ignore warnings when setting up the network if you are using an unsupported driver which is the case for my mac. So continue with:
+
+	network name
+	system name
+	user name & passwords
+	Install base
+	Configure package manager
  
-	Ignore warnings when setting up the network if you are using an unsupported driver which is the case for my mac. So continue with:
-network name
-system name
-user name & passwords
-Install base
-Configure package manager
-	And select:
-cryptdisks
-fdiskudeb
-patedudeb
-low-mem
-mbrudeb
-rescuemode
+And select:
+	cryptdisks
+	fdiskudeb
+	partedudeb
+	low-mem
+	mbrudeb
+	rescuemode
  
-	Select:
+Select:
 detect disks, then partition:
  
 	Select manual partitioning.
