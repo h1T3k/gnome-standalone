@@ -141,16 +141,16 @@ and:
  
 	ls -la /mnt/@var@lib@AccountsService
  
-sudo blkid /dev/mapper/nvme0n1p5_crypt
-#	: UUID="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
-sudo nano /etc/fstab
-	# Add the following (substitute the <UUID> with yours)
+	sudo blkid /dev/mapper/nvme0n1p5_crypt
+	#	: UUID="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+	sudo nano /etc/fstab
+Add the following (substitute the <UUID> with yours)
  
-# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
-UUID=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
- 
-# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
-UUID=9655aa34-2b43-40cd-947c-94d0b6193458 /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
+	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
+	 
+	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=9655aa34-2b43-40cd-947c-94d0b6193458 /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
  
 	sudo systemctl daemon-reload
 	sudo reboot
@@ -190,7 +190,6 @@ Add a corresponding entry to crypttab(5) with mapped device name nvme0n1p3_crypt
 	#	Starting crypto disk...nvme0n1p3_crypt (starting)...
 	#	Please unlock disk nvme0n1p3_crypt:  ********
 	#	nvme0n1p3_crypt (started)...done.
-
 Create a file system on the mapped device. Assuming source device for /boot is specified by its UUID in the fstab(5) – which the Debian Installer does by default – reusing the old UUID avoids editing the file.
  
 	sudo grep /boot /etc/fstab
@@ -202,8 +201,7 @@ Create a file system on the mapped device. Assuming source device for /boot is s
 	#	Creating filesystem with 246784 1k blocks and 61752 inodes
 	#	Filesystem UUID: x-x-x-x-x
 	#	[…]
- 
-Finally, mount /boot again from fstab, and copy the saved tarball to the freshly encrypted file system.
+ Finally, mount /boot again from fstab, and copy the saved tarball to the freshly encrypted file system.
  
 	sudo mount -v /boot
 	#	mount: /dev/mapper/nvme0n1p3_crypt mounted on /boot.
