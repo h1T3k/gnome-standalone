@@ -17,7 +17,7 @@ you can do this via USB, however you still need to remove the internal drive.
  
 DDing the bare metal installer onto a usb in MacOS will produce a different efi partition scheme, even if both devices you are using are apple products, the operating system with which you write that disk in must be MacOS in order to properly boot off of the following apple device, and also Apple DiskUtility seems to do exactly what it needs to with little manual intervention so I would suggest using that if you need to do any major rewrites up into the partitioning phase in order to obtain an apfs efi bootable bare metal installer.
  
-you can have far more control over the partition structure by using gdisk beforehand, but it is not necessary.
+you can have far more control over the partition structure by using gdisk beforehand, but it is not necessary if it's a fresh drive.
  
 I compiled this from about four or so different guides and read through numerous blog and reddit posts before I found a way that worked which once replicated has only really seemed to work this way which is probably due either memory constraints and a data bottleneck if using old hardware. Believe me it gets much more fast when wou plug an ssd directly into the board and install off of a usb 3.2+. That is truly when the power of the Debian Installer is realized with Kali Linux.
  
