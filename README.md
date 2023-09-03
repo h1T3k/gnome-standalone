@@ -170,7 +170,7 @@ Archive the directory elsewhere (on another device), and unmount it afterwards.
 	#	dd: error writing '/dev/nvme0n1p3’: No space left on device
 Format the underlying block device to LUKS1. (Note the --type luks1 in the command below, as Buster’s cryptsetup(8) defaults to LUKS version 2 for luksFormat.)
  
-	sudo cryptsetup luksFormat --type luks1 /dev/nvme0n1p3
+	sudo cryptsetup luksFormat /dev/nvme0n1p3
  
 	#	WARNING!
 	#	========
@@ -301,11 +301,6 @@ and reboot for the changes to take affect:
 # We're in....
  
 At this point I would open snapper-gui, make a new pre-boot snapshot for root, set it for 3 with 'name' as NUMBER_LIMIT and count as 10.
- 
-Reset encrypted boot partition password, change to and back from user settings, change to relevant password, check crypttab to replace 'nofail' with 'luks'.
-
-It seems either the method I've outlined which automatically unlocks /boot at startup does not work, or it was an issue until I tried it with gnome.. If this is the case just boot in and use the 'disks' gui to alter it's settings there; deactivate and then reactivate password protection then deactivate and reactivate user settings from the menu to the crypttab settings via the same gui it should update initramfs and related files from there then update inittramfss and grub, reboot after this change and it should work fine with the keys saved in it's own directory. I do have an outline mapped reverse engineer this because it seems to differ from pure debian, however life has begun to pile up so I hope that maybe the community can continue with any work that may need to be done by the point I've posted the video.
-One such issue is the outdated usage of grub2 where I believe it now unlocks luks2 and may contain an internal password management function making luks1 obsolete, especially when manjaro and several other flavors of linux offer this option in their installer.
 
 By the way:
  
@@ -315,7 +310,7 @@ While learning and self-improvement may seem harmless, there are individuals who
  
 Ethics and morality are often subjective. While I value forgiveness, I've also come to realize that the world isn't black and white. We must stand together, especially when feeling lost or scared, and strive for open communication in a world where our leaders breed seperatism within the populace.
  
-Our society is entangled in red tape, often out of fear of disrupting the status quo. This repression can lead individuals to seek out 'quick fixes,' be it in the form of oil, cheap labor, or drugs. It's a form of self-sabotage that stands in the way of collective well-being.
+Our society is entangled in red tape, often out of fear of disrupting the status quo. This repression can lead individuals to seek out 'quick fixes,' be it in the form of oil or cheap labor. It's a form of self-sabotage that stands in the way of collective well-being.
  
 If you found value in this guide and wish to support me, consider buying me a coffee or helping in any small way you can. Your support would be greatly appreciated, especially during challenging times.
  
@@ -352,5 +347,5 @@ If you found value in this guide and wish to support me, consider buying me a co
   .::::.        ..=*=:::..-:...:---...::-+###**##%%%##*+-:.: :--=++*++*#+===*##+=+#+===++=====++***#
    .:::::.        .....-==:..:-====-:::::::-::---====--..  ::-=+++====-=+*#*=+#*==============++*##@
      .:::::..        ..-+---:..:-=+++====----:::::----::..-=+**+==++===--==**++==============++*##%%
-      ..:::::..       . .::::....::-=-::---========++*+==++++===*+*#++=--===================+*#####%
+      ..:::::..       . .::::....::-=-::---========++*+==++++===*+*#++=--=================+*n0-l1f3~
 ```
