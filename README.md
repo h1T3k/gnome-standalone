@@ -1,28 +1,28 @@
+
 # CAUTION
-The following will not work unless you have first removed your computer's internal drive and replace it with your own internal or external ssd, if you continue without having done so, you will overwrite your main OSs efi/bios partition and potentially your nvram data, likely leaving you with an unbootable machine and a trip to the apple store....
- 
-I want to reiterate on this real quick: this simply will not work if you do not first remove your Mac's internal drive/s, trust!
- 
-Before we continue I would like to caution and forwarn those of you who follow allong that I am merely outlining how I did this and I am not explicitly directing you to do anything besides making meticulous backups of all of your data beforehand. That way if you happen to overwrite some terribly important files required for your device to boot and lose a decade's worth of work in the process you'll be able to restore it exacty from where you left off.
+The following will not work unless you have first removed your computer's internal drive and replace it with your own internal or external ssd, if you continue without having done so, you will overwrite your main OSs efi/bios partition and potentially your nvram data, likely leaving you with an unbootable machine and a trip to the technician....
+
+Before we continue I would like to forwarn those of you who follow along that I am merely outlining how I did this, and I am not explicitly directing you to do anything besides making meticulous backups of all of your data before so you don't lose something forever.
  
 By doing so, one can completely bypass all of the issues and obstacles present such as:
 * the potential overwrite of important data, directories and partitions potentially leading to an irrecoverable loss.
 * the overwrite of our host machine's efi partition
 
-When booting external media, it seems that the main volume's efi partition is called on by default. Sure we could start off on a legacy bootable machine, manually adjusting things as we go on before we even complete the installation, however we can get exacactly what we want with one machine, one extra ssd and a driver set.
+When booting external media, it seems that the main volume's efi partition is called on by default. Sure we could start off on a legacy bootable machine, manually adjusting things as we go on before we even complete the installation, however we can get exacactly what we want with one machine and a driver set.
  
-I completed this on a MacBook Air (13-inch, Early 2015), so for the sake of this I will assume you have the same, although I believe this would work on any EFI bootable machine if the internal storage is first removed and than booted from a bare metal installer USB. In the case of my installation, I used a SSD 3.2 as the medium for the installer, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD. The ssd I selected is remarkably fast however very, very inexpensive. It definitely needs a heat sink yet I can't see it being a permanent solution anyways as I would rather upgrade to a 5.0.
- 
-you can do this via USB, however you still need to remove the internal drive.
- 
-DDing the bare metal installer onto a usb in MacOS will produce a different efi partition scheme, even if both devices you are using are apple products, the operating system with which you write that disk in must be MacOS in order to properly boot off of the following apple device, and also Apple DiskUtility seems to do exactly what it needs to with little manual intervention so I would suggest using that if you need to do any major rewrites up into the partitioning phase in order to obtain an apfs efi bootable bare metal installer.
- 
-you can have far more control over the partition structure by using gdisk beforehand, but it is not necessary if it's a fresh drive.
+Since I completed this on a MacBook Air (13-inch, Early 2015), I will assume you'll do the same, although I believe this would work on any EFI bootable machine. I used an 500 GB pcie 3.2 as the installation medium, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD.
  
 I compiled this from about four or so different guides and read through numerous blog and reddit posts before I found a way that worked which once replicated has only really seemed to work this way which is probably due either memory constraints and a data bottleneck if using old hardware. Believe me it gets much more fast when wou plug an ssd directly into the board and install off of a usb 3.2+. That is truly when the power of the Debian Installer is realized with Kali Linux.
  
 	https://www.kali.org/docs/installation/hard-disk-install/
 	https://www.kali.org/docs/installation/btrfs/
+	https://www.kali.org/docs/usb/usb-standalone-encrypted/
+	https://www.gnu.org/software/grub/manual/grub/grub.html#Introduction-1
+	https://superuser.com/questions/1705973/add-efi-partition-to-bios-menu-after-nvram-reset
+	https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html
+	https://bbs.archlinux.org/viewtopic.php?id=268460
+	
+
  
 Lastly, while I uncovered three ways to get this done I am going to assume that you are doing exactly as I did and so from here on out I will refer to our target drive as nvme0n1 and its partitions as nvme0n1p1, nvme0n1p2, nvme0n1p3/nvme0n1p3_crypt/luks-aaaa-aa-aa-aa-aaaaaa, nvme0n1p4_crypt and nvme0n1p5_crypt etc etc if I and when I do, so make sure to check your device ids etc before making any changes. Maybe copy ths file down and adjust it before you start.
  
