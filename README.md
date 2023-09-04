@@ -143,14 +143,14 @@ and:
 	ls -la /mnt/@var@lib@AccountsService
  
 	sudo blkid /dev/mapper/nvme0n1p5_crypt
-	#	: UUID="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+	#	: UUID="<uuid>"
 	sudo nano /etc/fstab
-Add the following (substitute the <UUID> with yours)
+Add the following (substitute the <uuid> with yours)
  
 	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
-	UUID=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
+	UUID=<uuid> /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
-	UUID=9655aa34-2b43-40cd-947c-94d0b6193458 /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
+	UUID=<uuid> /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
  Save, exit, and reload.
  
 	sudo systemctl daemon-reload
@@ -190,9 +190,9 @@ Create a file system on the mapped device. Assuming source device for /boot is s
  
 	sudo grep /boot /etc/fstab
 	#	/boot was on /dev/nvme0n1p3 during installation
-	#	UUID=xxxx-xxxx-xxxx-xxxx /boot           ext4    defaults        0       2
+	#	UUID=<uuid> /boot           ext4    defaults        0       2
 	 
-	sudo mkfs.ext4 -m0 -U 02444949-46a2-4139-9b07-c578a9fb27fd /dev/mapper/nvme0n1p3_crypt
+	sudo mkfs.ext4 -m0 -U <uuid> /dev/mapper/nvme0n1p3_crypt
 	#	abcdef 1.23.4 (15-Dec-2018)
 	#	Creating filesystem with 246784 1k blocks and 61752 inodes
 	#	Filesystem UUID: x-x-x-x-x
@@ -266,9 +266,9 @@ like so:
 	/dev/mapper/nvme0n1p4_crypt	/		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@		0	0
 	/dev/mapper/nvme0n1p4_crypt	/.snapshots     btrfs   defaults,noatime,ssd,compress=lzo,subvol=@.snapshots	0	4
 	# /boot was on /dev/nvme0n1p3 during installation
-	UUID=9a90bf5e-fb5b-4a00-beba-616bc0092abe	/boot	ext4	defaults,noatime				0	1
+	UUID=<uuid>	/boot	ext4	defaults,noatime				0	1
 	# /boot/efi was on /dev/nvme0n1p1 during installation
-	UUID=EB8C-72F1			/boot/efi	vfat	umask=0077						0	1
+	UUID=<uuid>			/boot/efi	vfat	umask=0077						0	1
 	/dev/mapper/nvme0n1p4_crypt	/home		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@home		0	2
 	/dev/mapper/nvme0n1p4_crypt	/root		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@root		0	3
 	/dev/mapper/nvme0n1p4_crypt	/srv		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@srv		0	0
@@ -277,9 +277,9 @@ like so:
 	/dev/mapper/nvme0n1p4_crypt	/var/log	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@var@log	0	0
 	/dev/mapper/nvme0n1p5_crypt	none		swap	sw							0	0
 	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
-	UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/gdm3	btrfs	defaults,subvol=@var@lib@gdm3		0	0
+	UUID=<uuid>	/var/lib/gdm3	btrfs	defaults,subvol=@var@lib@gdm3		0	0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
-	UUID=e1005fc7-0668-4322-b272-22b6f4727e2a	/var/lib/AccountsService	btrfs	defaults,subvol=@var@lib@AccountsService	0	0 
+	UUID=<uuid>	/var/lib/AccountsService	btrfs	defaults,subvol=@var@lib@AccountsService	0	0 
 when done editing save your work, exit the editor then run:
 
 	sudo systemctl daemon-reload
@@ -300,18 +300,21 @@ and reboot for the changes to take affect:
 	sudo reboot now -f
 # We're in....
  
-At this point I would open snapper-gui, make a new pre-boot snapshot for root, set it for 3 with 'name' as NUMBER_LIMIT and count as 10.
+At this point I would open *snapper-gui*, make a new pre-boot snapshot for root, set it for 3 with name as NUMBER_LIMIT and count as 10.
 
-By the way:
+By the way, thanks for following along!
  
-Thank you for taking the time to complete this guide; it means the world to me. I've faced numerous obstacles, both directly and indirectly from those closest to me. It's surprising to see what ego, shame, and greed can make people do, even to those they claim to love.
- 
+
+before you go...
+
 While learning and self-improvement may seem harmless, there are individuals who oppose such growth, often out of fear that their own flaws might be exposed.
  
-Ethics and morality are often subjective. While I value forgiveness, I've also come to realize that the world isn't black and white. We must stand together, especially when feeling lost or scared, and strive for open communication in a world where our leaders breed seperatism within the populace.
+Ethics and morality are often subjective. While I value forgiveness, I've also come to realize that the world isn't black and white. We must stand together, especially when feeling lost or scared, and strive for open communication in a world where our leaders spread seperatism within the populace.
  
 Our society is entangled in red tape, often out of fear of disrupting the status quo. This repression can lead individuals to seek out 'quick fixes,' be it in the form of oil or cheap labor. It's a form of self-sabotage that stands in the way of collective well-being.
- 
+
+    ~h1-|t3k/n0|-l1f3~
+
 If you found value in this guide and wish to support me, consider buying me a coffee or helping in any small way you can. Your support would be greatly appreciated, especially during challenging times.
  
     Buy Me a Coffee:
@@ -319,8 +322,3 @@ If you found value in this guide and wish to support me, consider buying me a co
     For crypto donations:
         Bitcoin: 36aqR7oXP4tLxqe1oHckXtdVEizSNaWxJX
 	Message me for other addresses :)
-
-```
-    ~h1-|t3k/n0|-l1f3~
-
-
