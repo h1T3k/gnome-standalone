@@ -209,35 +209,35 @@ Archive the directory elsewhere (on another device), and unmount it afterwards.
 	sudo tar -C /boot --acls --xattrs --one-file-system -cf /tmp/boot.tar .
 	sudo umount /boot/efi
 	sudo umount /boot
- Wipe out the underlying block device (assumed to be /dev/nvme0n1p3 in the rest of this sub-section).
+Wipe out the underlying block device (assumed to be /dev/nvme0n1p3 in the rest of this sub-section).
  
-	sudo dd if=/dev/urandom of=/dev/nvme0n1p3 bs=1M status=none
-	#	dd: error writing '/dev/nvme0n1p3’: No space left on device
+	sudo dd if=/dev/urandom of=/dev/nvme0n1p2 bs=1M status=none
+	#	dd: error writing '/dev/nvme0n1p2’: No space left on device
 Format the underlying block device to LUKS1. (Note the --type luks1 in the command below, as Buster’s cryptsetup(8) defaults to LUKS version 2 for luksFormat.)
  
-	sudo cryptsetup luksFormat /dev/nvme0n1p3
+	sudo cryptsetup luksFormat /dev/nvme0n1p2
  
 	#	WARNING!
 	#	========
-	#	This will overwrite data on /dev/nvme0n1p3 irrevocably.
+	#	This will overwrite data on /dev/nvme0n1p2 irrevocably.
 	
 	#	Are you sure? (Type uppercase yes): YES
-	#	Enter passphrase for /dev/nvme0n1p3:
+	#	Enter passphrase for /dev/nvme0n1p2:
 	#	Verify passphrase:
-Add a corresponding entry to crypttab(5) with mapped device name nvme0n1p3_crypt, open it afterwards and check it’s contents manually.
+Add a corresponding entry to crypttab(5) with mapped device name nvme0n1p2_crypt, open it afterwards and check it’s contents manually.
  
-	echo "nvme0n1p3_crypt UUID=$(sudo blkid -o value -s UUID /dev/nvme0n1p3) none luks" | sudo tee -a /etc/crypttab
-	sudo cryptdisks_start nvme0n1p3_crypt
-	#	Starting crypto disk...nvme0n1p3_crypt (starting)...
-	#	Please unlock disk nvme0n1p3_crypt:  ********
-	#	nvme0n1p3_crypt (started)...done.
+	echo "nvme0n1p2_crypt UUID=$(sudo blkid -o value -s UUID /dev/nvme0n1p2) none luks" | sudo tee -a /etc/crypttab
+	sudo cryptdisks_start nvme0n1p2_crypt
+	#	Starting crypto disk...nvme0n1p2_crypt (starting)...
+	#	Please unlock disk nvme0n1p2_crypt:  ********
+	#	nvme0n1p2_crypt (started)...done.
 Create a file system on the mapped device. Assuming source device for /boot is specified by its UUID in the fstab(5) – which the Debian Installer does by default – reusing the old UUID avoids editing the file.
  
 	sudo grep /boot /etc/fstab
-	#	/boot was on /dev/nvme0n1p3 during installation
+	#	/boot was on /dev/nvme0n1p2 during installation
 	#	UUID=<uuid> /boot           ext4    defaults        0       2
 	 
-	sudo mkfs.ext4 -m0 -U <uuid> /dev/mapper/nvme0n1p3_crypt
+	sudo mkfs.ext4 -m0 -U <uuid> /dev/mapper/nvme0n1p2_crypt
 	#	abcdef 1.23.4 (15-Dec-2018)
 	#	Creating filesystem with 246784 1k blocks and 61752 inodes
 	#	Filesystem UUID: x-x-x-x-x
@@ -245,7 +245,7 @@ Create a file system on the mapped device. Assuming source device for /boot is s
  Finally, mount /boot again from fstab, and copy the saved tarball to the freshly encrypted file system.
  
 	sudo mount -v /boot
-	#	mount: /dev/mapper/nvme0n1p3_crypt mounted on /boot.
+	#	mount: /dev/mapper/nvme0n1p2_crypt mounted on /boot.
  
 	sudo tar -C /boot --acls --xattrs -xf /tmp/boot.tar
 	sudo mount -v /boot/efi
@@ -258,18 +258,18 @@ Enable the feature, update the GRUB image and reinstall in removable mode:
 	sudo grub-install /dev/nvme0n1 --force-extra-removable --no-nvram
 	sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --boot-directory=/boot --bootloader-id=GRUB --force-extra-removable --no-nvram
  
-	sudo cryptsetup luksDump /dev/nvme0n1p3 | grep -B1 "Iterations:"
+	sudo cryptsetup luksDump /dev/nvme0n1p2 | grep -B1 "Iterations:"
 	#	Key Slot 0: ENABLED
 	#	Iterations:             1000000
  
-	sudo cryptsetup luksChangeKey --pbkdf-force-iterations 420690 /dev/nvme0n1p3
+	sudo cryptsetup luksChangeKey --pbkdf-force-iterations 420690 /dev/nvme0n1p2
 	# 	Enter passphrase to be changed:
 	#	Enter new passphrase:
 	#	Verify passphrase:
 (You can reuse the existing passphrase in the above prompts.)
 
-	sudo cryptsetup luksOpen --test-passphrase --verbose /dev/nvme0n1p3
-	#	Enter passphrase for /dev/nvme0n1p3:
+	sudo cryptsetup luksOpen --test-passphrase --verbose /dev/nvme0n1p2
+	#	Enter passphrase for /dev/nvme0n1p2:
 	#	Key slot 1 unlocked.
 	#	Command successful.
 # Avoiding the Extra Password Prompt
@@ -286,16 +286,16 @@ Generate the shared secret (here with 512 bits of entropy as it’s also the siz
 	sudo chmod u=r,go-rwx /etc/keys/root.key
 Create a new key slot with that key file.
 
-	sudo cryptsetup luksAddKey /dev/nvme0n1p3 /etc/keys/boot.key
+	sudo cryptsetup luksAddKey /dev/nvme0n1p2 /etc/keys/boot.key
 and add in the other voleumes too.
 
-	sudo cryptsetup luksAddKey /dev/nvme0n1p4 /etc/keys/swap.key
-	sudo cryptsetup luksAddKey /dev/nvme0n1p5 /etc/keys/root.key
+	sudo cryptsetup luksAddKey /dev/nvme0n1p3 /etc/keys/swap.key
+	sudo cryptsetup luksAddKey /dev/nvme0n1p4 /etc/keys/root.key
 add these entries into the ccrypttab:
 
-	sudo sed -i "/^nvme0n1p3_crypt/c\nvme0n1p3_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p3) /etc/keys/boot.key luks,key-slot=1" /etc/crypttab
-	sudo sed -i "/^nvme0n1p4_crypt/c\nvme0n1p4_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p4) /etc/keys/swap.key luks,swap,discard,key-slot=1" /etc/crypttab
-	sudo sed -i "/^nvme0n1p5_crypt/c\nvme0n1p5_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p5) /etc/keys/root.key luks,discard,key-slot=1" /etc/crypttab
+	sudo sed -i "/^nvme0n1p2_crypt/c\nvme0n1p2_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p2) /etc/keys/boot.key luks,key-slot=1" /etc/crypttab
+	sudo sed -i "/^nvme0n1p3_crypt/c\nvme0n1p3_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p3) /etc/keys/swap.key luks,swap,discard,key-slot=1" /etc/crypttab
+	sudo sed -i "/^nvme0n1p4_crypt/c\nvme0n1p4_crypt UUID=$(sudo blkid -s UUID -o value /dev/nvme0n1p4) /etc/keys/root.key luks,discard,key-slot=1" /etc/crypttab
 make sure its all correct and comment out <#> the original entries with:
 
 	sudo nano /etc/crypttab - the mapper name for boot may change, so you may want to run lsblk to check it.
@@ -310,7 +310,7 @@ like so:
  
 	/dev/mapper/nvme0n1p4_crypt	/		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@		0	0
 	/dev/mapper/nvme0n1p4_crypt	/.snapshots     btrfs   defaults,noatime,ssd,compress=lzo,subvol=@.snapshots	0	4
-	# /boot was on /dev/nvme0n1p3 during installation
+	# /boot was on /dev/nvme0n1p2 during installation
 	UUID=<uuid>	/boot	ext4	defaults,noatime				0	1
 	# /boot/efi was on /dev/nvme0n1p1 during installation
 	UUID=<uuid>			/boot/efi	vfat	umask=0077						0	1
@@ -320,9 +320,9 @@ like so:
 	/dev/mapper/nvme0n1p4_crypt	/tmp		btrfs	defaults,noatime,ssd,compress=lzo,subvol=@tmp		0	0
 	/dev/mapper/nvme0n1p4_crypt	/usr/local	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@usr@local	0	0
 	/dev/mapper/nvme0n1p4_crypt	/var/log	btrfs	defaults,noatime,ssd,compress=lzo,subvol=@var@log	0	0
-	/dev/mapper/nvme0n1p5_crypt	none		swap	sw							0	0
-	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
-	UUID=<uuid>	/var/lib/gdm3	btrfs	defaults,subvol=@var@lib@gdm3		0	0
+	/dev/mapper/nvme0n1p3_crypt	none		swap	sw							0	0
+	# /var/lib/gdm3*lightdm was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=<uuid>	/var/lib/gdm3*lightdm	btrfs	defaults,subvol=@var@lib@gdm3		0	0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=<uuid>	/var/lib/AccountsService	btrfs	defaults,subvol=@var@lib@AccountsService	0	0 
 when done editing save your work, exit the editor then run:
