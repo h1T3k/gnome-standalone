@@ -134,32 +134,69 @@ For XFCE:
 	sudo sed -i 's/^#user-authority-in-system-dir=false/user-authority-in-system-dir=true/' /etc/lightdm/lightdm.conf
 	$
 	sudo reboot
+# Mount your root partition
+	sudo mount /dev/mapper/nvme0n1p4_crypt /mnt
+
+# Create read-only snapshots for XFCE
+	sudo btrfs subvolume create /mnt/@var@lib@lightdm
+	sudo btrfs subvolume create /mnt/@var@lib@AccountsService
+
+# Move directories to the snapshots
+	sudo find /var/lib/lightdm/ -mindepth 1 -exec mv -t /mnt/@var@lib@lightdm/ {} +
+	sudo find /var/lib/AccountsService/ -mindepth 1 -exec mv -t /mnt/@var@lib@AccountsService/ {} +
+
+you can check with:
+ 
+	ls -la /mnt/@var@lib@lightdm
+and:
+ 
+	ls -la /mnt/@var@lib@AccountsService
+
+Locate your root partition with:
+ 
+	sudo blkid /dev/mapper/nvme0n1p4_crypt
+	#	: UUID="<uuid>"
+	sudo nano /etc/fstab
+And add the following (substitute the <uuid> with yours from the previous command)
+ 
+	# /var/lib/lightdm was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=<uuid> /var/lib/lightdm   btrfs   defaults,subvol=@var@lib@gdm3 0       0
+	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
+	UUID=<uuid> /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
+Save, exit, and reload.
+ 
+	sudo systemctl daemon-reload
+	sudo reboot
+
 For Gnome:
 
-	sudo mount /dev/mapper/nvme0n1p5_crypt /mnt 
+	sudo mount /dev/mapper/nvme0n1p4_crypt /mnt 
 
  	sudo btrfs subvolume create /mnt/@var@lib@gdm3
 	sudo btrfs subvolume create /mnt/@var@lib@AccountsService
  
 	sudo find /var/lib/gdm3/ -mindepth 1 -exec mv -t /mnt/@var@lib@gdm3/ {} +
 	sudo find /var/lib/AccountsService/ -mindepth 1 -exec mv -t /mnt/@var@lib@gAccountsService/ {} +
+
 you can check with:
  
 	ls -la /mnt/@var@lib@gdm3
 and:
  
 	ls -la /mnt/@var@lib@AccountsService
+
+Locate your root partition with:
  
-	sudo blkid /dev/mapper/nvme0n1p5_crypt
+	sudo blkid /dev/mapper/nvme0n1p4_crypt
 	#	: UUID="<uuid>"
 	sudo nano /etc/fstab
-Add the following (substitute the <uuid> with yours)
+And add the following (substitute the <uuid> with yours from the previous command)
  
 	# /var/lib/gdm3 was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=<uuid> /var/lib/gdm3   btrfs   defaults,subvol=@var@lib@gdm3 0       0
 	# /var/lib/AccountsService was on /dev/mapper/nvme0n1p4_crypt during installation
 	UUID=<uuid> /var/lib/AccountsService   btrfs   defaults,subvol=@var@lib@AccountsService 0       0 
- Save, exit, and reload.
+Save, exit, and reload.
  
 	sudo systemctl daemon-reload
 	sudo reboot
