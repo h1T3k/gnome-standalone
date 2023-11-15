@@ -1,5 +1,5 @@
 
-# STANDALONE
+# GNOME-STANDALONE
 The following will not work unless you have first removed your computer's internal drive and replace it with your own internal or external ssd, if you continue without having done so, you will overwrite your main OSs efi/bios partition and potentially your nvram data, likely leaving you with an unbootable machine and a trip to the technician....
  
 By doing so, one can completely bypass all of the issues and obstacles present such as:
