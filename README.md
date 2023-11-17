@@ -1,16 +1,15 @@
 
-# Kali, FULLY LOADED: Gnome
-The following will not work unless you have first removed your computer's internal drive and replace it with your own internal or external ssd, if you continue without having done so, you will overwrite your main OSs efi/bios partition and potentially your nvram data, likely leaving you with an unbootable machine and a trip to the technician....
+# Kali: FULLY LOADED - Gnome
+The following will not work unless you have first removed your computer's internal drive and replace it with your own ssd, if you continue without having done so, you will overwrite your main OSs efi/bios partition, likely leaving you with an unbootable machine (unless you, like me, are done with MacOS), resulting in a trip to the technician....
  
-By doing so, one can completely bypass all of the issues and obstacles present such as:
-* the potential overwrite of important data, directories and partitions potentially leading to an irrecoverable loss.
-* the overwrite of our host machine's efi partition
-
-When booting external media, it seems that the main volume's efi partition is called on by default. Sure we could start off on a legacy bootable machine, manually adjusting things as we go on before we even complete the installation, however we can get exacactly what we want with one machine and a driver set.
+When done correctly, one can completely bypass all of the issues and obstacles present such as:
+* the potential overwrite of important data, directories and partitions potentially leading to an irrecoverable loss during installation of Kali Linux.
+* the overwrite of our host machine's efi partition resulting in an unbootable machine.
+* having a naked bootloader which is highly susceptible to evil-maid/-bootloader attacks.
  
-Since I completed this on a MacBook Air (13-inch, Early 2015), I will assume you'll do the same, although I believe this would work on any EFI bootable machine as long as you remove the internal drive. I used an 500 GB pcie 3.2 as the installation medium, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD.
+Since I completed this on a MacBook Air (13-inch, Early 2015 model), I will assume you'll do the same, although I believe this would work on any EFI bootable machine (I know this works on late 2015 iMacs too) as long as you remove the internal drive. I used a 500 GB pcie 3.2 as the installation medium, and a portable 256G NVME 4.0x4 Blade SSD for the target drive in place of the Apple M.2 SSD.
  
-I compiled this from about four or so different guides and read through numerous blog and reddit posts before I found a way that worked which once replicated has only really seemed to work this way which is probably due either memory constraints and a data bottleneck if using old hardware. Believe me it gets much more fast when wou plug an ssd directly into the board and install off of a usb 3.2+. That is truly when the power of the Debian Installer is realized with Kali Linux. What I mainly used:
+I compiled this by sourcing through numerous different guides, blogs and reddit posts before I found a way that worked which once replicated has only really seemed to work this way due to memory constraints, a data bottleneck if using old hardware and automatic recognition of specific UUIDs and disk locations in relation to /etc/crypttab*fstab vs mount points. Additionally, it gets much more fast when you plug an ssd directly into the board and install off of a usb 3.2+ via SATA. This is truly when the power of the Debian Installer is realized with Kali Linux where an automatic install may take up to five hours alone to generate an image with a naked bootloader and encrypted LVM versus getting down and dirty on a graphical advanced expert installation. So, what I mainly used:
  
 	https://www.kali.org/docs/installation/hard-disk-install/
 	https://www.kali.org/docs/installation/btrfs/
@@ -22,11 +21,13 @@ I compiled this from about four or so different guides and read through numerous
 	
 
  
-Lastly, while I uncovered a few ways to get this done I am going to assume that you are doing exactly as I did and so from here on out I will refer to our target drive as nvme0n1 and its partitions as nvme0n1p1, nvme0n1p2, nvme0n1p3/nvme0n1p3_crypt/luks-aaaa-aa-aa-aa-aaaaaa, nvme0n1p4_crypt and nvme0n1p5_crypt etc etc if I and when I do, so make sure to check your device ids etc before making any changes. Maybe copy ths file down and adjust it before you start.
+Lastly, while I uncovered a few ways to get this done I am going to assume that you are doing exactly as I did and so from here on out I will refer to our target drive as nvme0n1 and its partitions as nvme0n1p1, nvme0n1p2, nvme0n1p3/nvme0n1p3_crypt/luks-aaaa-aa-aa-aa-aaaaaa, nvme0n1p4_crypt and nvme0n1p5_crypt and so on, so make sure to check your device ids etc before making any changes. Some machines will not recognize the drives as nvme0n1 and will register them as sdX unless mounted in an adapter and the other way around in some cases. Copy this file down and adjust it before you start, checking your drives with lsblk via command line first.
+
+* for extra flavor and security, adjust this guide accordingly so that your EFI partition resides on a separate external thumb-drive so that you can remove the drive in order to mitigate retaliation on your bootloader mid-attack post-install.
  
 In Mac OS, power it down and carefully remove the internal drive. This will take care of /target/boot/efi being mounted to the wrong location.
  
-Replace the internal drive with the new SSD we are using as our /target. Plug back in the power cable, our Kali installer USB and reboot our computer from the image.
+Replace the internal drive with the new SSD we are using as our /target. Plug back in the power cable, our Kali installer USB->SATA 3.2, and reboot our computer from the image.
  
 Continue by selecting "Advanced Options" and then selecting "graphical expert installation guide.."
  
@@ -305,7 +306,12 @@ and reboot for the changes to take affect:
 	sudo reboot now -f
 # We're in....
  
-At this point I would open *snapper-gui*, make a new pre-boot snapshot for root, set it for 3 with name as NUMBER_LIMIT and count as 10.
+
+Finally, open the 'disks' gui via the application finder (command then 'diaks' then hit 'enter'), select the unlocked boot partition, click the gear icon in the tab below and 'change passphrase'; change it's password first to something simple (like kalima) and then back to the more secure one (kalimaa, although realistically a far more complicated one will be much more secure, and should be your choice). Once complete, click the gear again and select 'edit encryption options' from the drop-down-menu then check the 'user session defaults' radio button and click 'ok' in the lower right-hand side of the pane. Click the gear wheel again, followed once more by 'edit encryption options' and uncheck the 'user session default's radio button. Delete the 'nofail' option and leave that field blank. Modify the password field to yours and click 'ok' in the lower right-hand side of the pane.
+ 
+At this point I would open *snapper-gui* and click the disk icon in the top left, lowering the amount of snapshots to create so it is more manageable space-wise. Make a new pre-boot configuration for root and create a new 'pre-boot' root (/) snapshot with 'number' as the cleanup option, NUMBER_LIMIT in the name field below, with '3' as it's value. Hit 'ok' and you're ready to fully update the system, kernel, etc!
+
+The extra space we allocated initially should make sure that any updates won't fill up the boot partition past the allotted space, ensuring that you can use this system for quite a long time!
 
 By the way, thanks for following along!
  
