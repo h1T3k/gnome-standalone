@@ -237,13 +237,14 @@ Generate the shared secret (here with 512 bits of entropy as it’s also the siz
 	sudo mkdir -m0700 /etc/keys
 	bash
 	( umask 0077 && sudo dd if=/dev/urandom bs=1 count=64 of=/etc/keys/boot.key conv=excl,fsync )
-	#	64+0 records in
-	#	64+0 records out
-	#	64 bytes copied, 0.000698363 s, 91.6 kB/s
+	( umask 0077 && sudo dd if=/dev/urandom bs=1 count=64 of=/etc/keys/swap.key conv=excl,fsync )
+	( umask 0077 && sudo dd if=/dev/urandom bs=1 count=64 of=/etc/keys/root.key conv=excl,fsync )
 	zsh
 	sudo chmod u=rx,go-rwx /etc/keys
+	sudo chmod u=r,go-rwx /etc/keys/boot.key
+	sudo chmod u=r,go-rwx /etc/keys/swap.key
 	sudo chmod u=r,go-rwx /etc/keys/root.key
-Create a new key slot with that key file.
+Create new key slots with new key files.
 
 	sudo cryptsetup luksAddKey /dev/nvme0n1p2 /etc/keys/boot.key
 and add in the other voleumes too.
