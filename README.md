@@ -313,6 +313,22 @@ At this point I would open *snapper-gui* and click the disk icon in the top left
 
 The extra space we allocated initially should make sure that any updates won't fill up the boot partition past the allotted space, ensuring that you can use this system for quite a long time!
 
+
+
+To erase the bash history in Kali Linux, use the following terminal commands:
+
+
+echo > ~/.bash_history
+
+
+To erase the zsh history, use:
+
+
+echo > ~/.zsh_history
+
+
+After running these commands, you may also want to exit the terminal session to ensure the erasure takes effect.
+
 By the way, thanks for following along!
  
 
