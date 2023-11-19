@@ -329,6 +329,14 @@ echo > ~/.zsh_history
 
 After running these commands, you may also want to exit the terminal session to ensure the erasure takes effect.
 
+Lastly, if you want this on USB and not nvme, boot into a different machine, identify your target and source and execute:
+
+sudo ddrescue /dev/sdc1 /dev/sdd1 rescue-1.log
+sudo ddrescue /dev/sdc2 /dev/sdd2 rescue-2.log
+sudo ddrescue /dev/sdc3 /dev/sdd3 rescue-3.log
+
+Where sdc is the source and sdd is the target, you may be prompted to use --force with these commands.
+
 By the way, thanks for following along!
  
 
