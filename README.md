@@ -111,9 +111,7 @@ Finish installing, remove the installation media and reboot into newly installed
  
 # Setting up BTRFS filesystems.
 
-	sudo apt dist-upgrade
-	sudo apt auto-remove -y
-	sudo apt clean
+	sudo apt dist-upgrade -y && sudo apt auto-remove -y && sudo apt clean
 necessary:
 
 	sudo passwd	
