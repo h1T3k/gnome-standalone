@@ -117,7 +117,7 @@ necessary:
 	sudo passwd	
 Install some essential tools
 
-	sudo apt update && sudo apt install btrfs-progs snapper snapper-gui grub-btrfs
+	sudo apt update && sudo apt install btrfs-progs snapper snapper-gui grub-btrfs -y
 Create the snapper configuration for the root filesystem "/"
 
 	sudo cp /usr/share/snapper/config-templates/default /etc/snapper/configs/root
@@ -126,9 +126,7 @@ Prevent "updatedb" from indexing the snapshots, which would slow down the system
 
 	sudo sed -i '/# PRUNENAMES=/ a PRUNENAMES = ".snapshots"' /etc/updatedb.conf
 
-For Gnome:
-
-	sudo mount /dev/mapper/nvme0n1p4_crypt /mnt 
+	sudo mount /dev/mapper/nvme0n1p4_crypt /mnt
 
  	sudo btrfs subvolume create /mnt/@var@lib@gdm3
 	sudo btrfs subvolume create /mnt/@var@lib@AccountsService
