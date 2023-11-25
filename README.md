@@ -211,8 +211,8 @@ Enable the feature, update the GRUB image and reinstall in removable mode:
 	echo "GRUB_ENABLE_CRYPTODISK=y" | sudo tee -a /etc/default/grub
 	sudo update-grub
  
-	sudo grub-install /dev/nvme0n1 --force-extra-removable --no-nvram
-	sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --boot-directory=/boot --bootloader-id=GRUB --force-extra-removable --no-nvram
+	sudo grub-install /dev/nvme0n1 --force-extra-removable --no-nvram --uefi-secure-boot
+	sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --boot-directory=/boot --bootloader-id=GRUB --force-extra-removable --no-nvram --uefi-secure-boot
  
 	sudo cryptsetup luksDump /dev/nvme0n1p2 | grep -B1 "Iterations:"
 	#	Key Slot 0: ENABLED
@@ -256,9 +256,7 @@ add these entries into the ccrypttab:
 make sure its all correct and comment out <#> the original entries with:
 
 	sudo nano /etc/crypttab - the mapper name for boot may change, so you may want to run lsblk to check it.
-	#
-	#
-	#
+
 # Finishing up BTRFS
 Now we can add the final modifications to our /etc/fstab for our btrfs filesystem with:
 
@@ -299,7 +297,7 @@ update grub
 	sudo update-grub
 and reboot for the changes to take affect:
 
-	sudo reboot now -f
+	sudo reboot now
 # We're in....
  
 
