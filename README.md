@@ -155,7 +155,7 @@ And add the following (substitute the <uuid> with yours from the previous comman
 Save, exit, and reload.
  
 	sudo systemctl daemon-reload
-	sudo reboot
+	sudo reboot now
 Archive the directory elsewhere (on another device), and unmount it afterwards.
  
 	sudo mount -oremount,ro /boot
