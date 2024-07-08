@@ -333,23 +333,7 @@ Where sdc is the source and sdd is the target, you may be prompted to use --forc
 
 A common error from this point on may be an inability to boot properly if the original nvme has been placed back in the internal slot, and an attempt is made to boot from the portable adapter as both disks share the same uuids and by default grub2 will choose the ones at the beginning of the stack which by this point do not match the parameters specified in your initramfs.conf file.
 
-By the way, thanks for following along!
- 
+Thanks for following along!
 
-before you go...
-
-While learning and self-improvement may seem harmless, there are individuals who oppose such growth, often out of fear that their own flaws might be exposed.
- 
-Ethics and morality are often subjective. While I value forgiveness, I've also come to realize that the world isn't black and white. We must stand together, especially when feeling lost or scared, and strive for open communication in a world where our leaders spread seperatism within the populace.
- 
-Our society is entangled in red tape, often out of fear of disrupting the status quo. This repression can lead individuals to seek out 'quick fixes,' be it in the form of oil or cheap labor. It's a form of self-sabotage that stands in the way of collective well-being.
 
     ~h1-|t3k/n0|-l1f3~
-
-If you found value in this guide and wish to support me, consider buying me a coffee or helping in any small way you can. Your support would be greatly appreciated, especially during challenging times.
- 
-    Buy Me a Coffee:
-    	https://www.buymeacoffee.com/h1t3kd
-    For crypto donations:
-        Bitcoin: 36aqR7oXP4tLxqe1oHckXtdVEizSNaWxJX
-	Message me for other addresses :)
