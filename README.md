@@ -132,7 +132,7 @@ Prevent "updatedb" from indexing the snapshots, which would slow down the system
 	sudo btrfs subvolume create /mnt/@var@lib@AccountsService
  
 	sudo find /var/lib/gdm3/ -mindepth 1 -exec mv -t /mnt/@var@lib@gdm3/ {} +
-	sudo find /var/lib/AccountsService/ -mindepth 1 -exec mv -t /mnt/@var@lib@gAccountsService/ {} +
+	sudo find /var/lib/AccountsService/ -mindepth 1 -exec mv -t /mnt/@var@lib@AccountsService/ {} +
 
 you can check with:
  
